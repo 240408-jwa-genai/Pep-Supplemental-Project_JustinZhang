@@ -16,14 +16,23 @@ public class UserService {
 		// since this is where the credentials are actually authenticated we can use the username and newly finished
 		// dao method to find users by username, and check to see if we get a user back
 		User possibleUser = dao.getUserByUsername(loginRequestData.getUsername());
-		if(possibleUser != null){
-			// the commented line is redundant
-//			boolean usernamesMatch = loginRequestData.getUsername().equals(possibleUser.getUsername());
+		//Checking that the user exists in the database
+		if(possibleUser.getUsername() != null){
+			//check if the password is correct
 			boolean passwordsMatch = loginRequestData.getPassword().equals(possibleUser.getPassword());
 			if (passwordsMatch){
 				return possibleUser;
+			} else {
+				//Password is incorrect
+				System.out.println("-------------------------------------------------------------------------------------------");
+				System.out.println("Password is incorrect, please try again");
 			}
+		} else {
+			//Username doesn't exist
+			System.out.println("-------------------------------------------------------------------------------------------");
+			System.out.println("Username doesn't exist, please try again");
 		}
+
 		return new User();
 	}
 

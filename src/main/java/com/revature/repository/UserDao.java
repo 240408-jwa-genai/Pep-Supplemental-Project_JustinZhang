@@ -1,43 +1,36 @@
 package com.revature.repository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import com.revature.models.User;
 import com.revature.models.UsernamePasswordAuthentication;
 import com.revature.utilities.ConnectionUtil;
 
-import java.sql.*;
-
 public class UserDao {
     
     public User getUserByUsername(String username){
-        // we should wrap our Connection object in a try with resources block so it auto-closes when the method
-        // is finished
         try (Connection connection = ConnectionUtil.createConnection()){
-            // first we need to craft our sql statement
+            //Setting up an SQL statement to query the username
             String sql = "SELECT * FROM users WHERE username = ?";
-            // next we create a PreparedStatement and pass our SQL statement into it
             PreparedStatement ps = connection.prepareStatement(sql);
-            // now that the PreparedStatement is created we can inject our username into the SQL
             ps.setString(1, username);
-            // once the sql statement is fully prepared we can execute it with the executeQuery method
-            /*
-                the executeQuery method will return a "ResultSet" object that holds any data taken from
-                the database. We can use the "next" method of the resultSet to start accessing that data, if
-                that data exists. If the data does not exist then the method will return a false boolean and
-                we can write our code to respond accordingly
-             */
-            User possibleUser = new User(); // creating the user to be returned here
-            ResultSet rs =  ps.executeQuery();
+            //Executing the statement 
+            ResultSet rs = ps.executeQuery();
+            User possibleUser = new User();
+            //if there is an existing user, put data into the form of a User object
             if(rs.next()){
-                // if the next method returns true then there is data we can put into our User object
-                int retrievedId = rs.getInt("id"); // I could put the column number instead
-                String retrievedUsername = rs.getString("username");
-                String retrievedPassword = rs.getString("password");
-                possibleUser.setId(retrievedId);
-                possibleUser.setUsername(retrievedUsername);
-                possibleUser.setPassword(retrievedPassword);
+                possibleUser.setId(rs.getInt("id"));
+                possibleUser.setUsername(rs.getString("username"));
+                possibleUser.setPassword(rs.getString("password"));
             }
+
             return possibleUser;
-        } catch (SQLException e){
+        } catch (SQLException e) {
+            //Handle exception and returns null
             e.printStackTrace();
             return null;
         }
@@ -45,20 +38,16 @@ public class UserDao {
 
     public User createUser(UsernamePasswordAuthentication registerRequest) {
         try (Connection connection = ConnectionUtil.createConnection()){
-            // craft initial sql
+            //Setting up an SQL statement to create a new user
             String sql = "INSERT INTO users (username, password) VALUES (?,?)";
-            // create preppared statement
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS); // the second argument tells the database to return the id that is generated for the new record
-            // inject information into our sql statement, order is determined by sql
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, registerRequest.getUsername());
             ps.setString(2, registerRequest.getPassword());
-            // to execute our sql statement AND get the id generated for the new user we have a two-step process
-            // step one: call executeUpdate (use this method for "INSERT", "UPDATE" and "DELETE" queries because
-            // it will tell you how many rows are affected by your query
+            //Executing the statement 
             ps.executeUpdate();
-            // once the query is executed we can use the getGeneratedKeys method to get the id of the newly
-            // created user
+            //Get the new generated id
             ResultSet rs = ps.getGeneratedKeys();
+            //Create new user to be returned
             User newUser = new User();
             newUser.setUsername(registerRequest.getUsername());
             newUser.setPassword(registerRequest.getPassword());
@@ -67,21 +56,10 @@ public class UserDao {
                 newUser.setId(rs.getInt(1));
             }
             return newUser;
-        } catch (SQLException e){
+        } catch (SQLException e) {
+            //Handle exception and returns null
             e.printStackTrace();
             return null;
         }
-
     }
-
-    public static void main(String[] args) {
-        UserDao dao = new UserDao();
-        UsernamePasswordAuthentication newCreds = new UsernamePasswordAuthentication();
-        newCreds.setUsername("new user");
-        newCreds.setPassword("new pass");
-        User returnedUser = dao.createUser(newCreds);
-        System.out.println(returnedUser);
-
-    }
-
 }
