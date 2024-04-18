@@ -1,6 +1,10 @@
 package com.revature.controller;
 
+import java.util.List;
+
 import com.revature.MainDriver;
+import com.revature.models.Moon;
+import com.revature.models.Planet;
 import com.revature.models.User;
 import com.revature.models.UsernamePasswordAuthentication;
 import com.revature.service.UserService;
@@ -31,7 +35,7 @@ public class UserController {
 		if (userResponse.getId() != 0){
 			System.out.println("Registration successful! Enjoy using the Planetarium!");
 		} else {
-			System.out.println("Registration failed: please double check your username and password and try again.");
+			System.out.println("-------------------------------------------------------------------------------------------");
 		}
 	}
 
@@ -44,5 +48,18 @@ public class UserController {
 	public boolean checkAuthorization(int userId) {	
 		// TODO: implement
 		return false;
+	}
+
+	public void viewAllPlanetsAndMoons(int currentUserId){
+		List<Planet> planets = userService.getPlanets(currentUserId);
+		
+        for (Planet planet : planets) {
+            List<Moon> moons = userService.getMoons(planet.getId());
+            System.out.println(planet.toString());
+            for (Moon moon : moons) {
+                System.out.println(moon.toString());
+            }
+            System.out.println("-------------------------------");
+        }
 	}
 }

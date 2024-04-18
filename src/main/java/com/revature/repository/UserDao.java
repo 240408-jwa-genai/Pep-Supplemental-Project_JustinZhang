@@ -5,7 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.revature.models.Moon;
+import com.revature.models.Planet;
 import com.revature.models.User;
 import com.revature.models.UsernamePasswordAuthentication;
 import com.revature.utilities.ConnectionUtil;
@@ -61,5 +65,73 @@ public class UserDao {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public List<Moon> viewMoons(int planetId){
+        try (Connection connection = ConnectionUtil.createConnection()){
+            //Setting up an SQL statement to get all moons from a planet
+            String sql = "SELECT * FROM moons WHERE myPlanetId = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, planetId);
+            //Executing the statement 
+            ResultSet rs = ps.executeQuery();
+            List<Moon> moonList = new ArrayList<Moon>();
+            
+            //if there are existing moons, put data into list of moons
+            while(rs.next()){
+                Moon newMoon = new Moon();
+                newMoon.setId(rs.getInt("id"));
+                newMoon.setName(rs.getString("name"));
+                newMoon.setMyPlanetId(rs.getInt("myPlanetId"));
+                moonList.add(newMoon);
+            }
+
+            return moonList;
+        } catch (SQLException e) {
+            //Handle exception and returns null
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<Planet> viewPlanets(int ownerId){
+        try (Connection connection = ConnectionUtil.createConnection()){
+            //Setting up an SQL statement to get all moons from a planet
+            String sql = "SELECT * FROM planets WHERE ownerId = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, ownerId);
+            //Executing the statement 
+            ResultSet rs = ps.executeQuery();
+            List<Planet> planetList = new ArrayList<Planet>();
+            
+            //if there are existing moons, put data into list of moons
+            while(rs.next()){
+                Planet newPlanet = new Planet();
+                newPlanet.setId(rs.getInt("id"));
+                newPlanet.setName(rs.getString("name"));
+                newPlanet.setOwnerId(rs.getInt("ownerId"));
+                planetList.add(newPlanet);
+            }
+
+            return planetList;
+        } catch (SQLException e) {
+            //Handle exception and returns null
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public static void main(String[] args) {
+        UserDao uDao = new UserDao();
+        List<Planet> planets = uDao.viewPlanets(1);
+
+        for (Planet planet : planets) {
+            List<Moon> moons = uDao.viewMoons(planet.getId());
+            System.out.println(planet.toString());
+            for (Moon moon : moons) {
+                System.out.println(moon.toString());
+            }
+            System.out.println("-------------------------");
+        }
+
     }
 }
