@@ -1,5 +1,6 @@
 package com.revature;
 
+import java.util.List;
 import java.util.Scanner;
 
 import com.revature.controller.MoonController;
@@ -106,7 +107,7 @@ public class MainDriver {
                         input = scanner.nextLine();
                         if(input.equals("6")){
                             userController.logout();
-                        } else if(input.equals("1")){
+                        } else if(input.equals("1") && userController.checkAuthorization(loggedInUserId)){
                             //Create a planet menu--------------------------------------------------------------------------------------
                             System.out.println("Let's create a new Planet!");
                             System.out.println("Planet names should be unique and have 30 or less characters");
@@ -119,7 +120,7 @@ public class MainDriver {
 
                             planetController.createPlanet(loggedInUserId, potentialPlanet);
                             
-                        } else if(input.equals("2")){
+                        } else if(input.equals("2") && userController.checkAuthorization(loggedInUserId)){
                             //Create a moon menu----------------------------------------------------------------------------------------
                             System.out.println("Let's create a new Moon!");
                             System.out.println("Please select the Planet you want the Moon to orbit");
@@ -164,22 +165,45 @@ public class MainDriver {
                                 System.out.println("-------------------------------------------------------------------------------------------");
                             }
 
-                        } else if(input.equals("3")){
+                        } else if(input.equals("3") && userController.checkAuthorization(loggedInUserId)){
                             //Delete a planet menu----------------------------------------------------------------------------------------
                             System.out.println("Which Planet do you want to delete?");
-                            System.out.print("Please input the Planet id: ");
+                            userController.viewAllPlanetsAndMoons(loggedInUserId);
+                            System.out.print("Please input the Planet #: ");
                             String planetId = scanner.nextLine();
 
                             try {
                                 //Valid planet id recieved 
                                 int pId = Integer.parseInt(planetId);
-                                planetController.deletePlanet(loggedInUserId, pId);
+                                List<Moon> moons = planetController.getMoons(pId);
+
+                                if(planetController.verifyPlanet(loggedInUserId, pId)){
+                                    if(moons.isEmpty()){
+                                        planetController.deletePlanet(loggedInUserId, pId);
+                                    } else {
+                                        System.out.println("This Planet has moons orbiting it, deleting the Planet will also delete its moons");
+                                        System.out.print("Are you sure? (Y/N): ");
+                                        String confirm = scanner.nextLine();
+                                        confirm = confirm.toLowerCase();
+                                        if(confirm.equals("y") || confirm.equals("yes")){
+                                            for (Moon moon : moons) {
+                                                moonController.deleteMoon(moon.getId());
+                                            }
+                                            planetController.deletePlanet(loggedInUserId, pId);
+                                        }
+                                    }
+                                } else {
+                                    System.out.println("-------------------------------------------------------------------------------------------");
+                                    System.out.println("This Planet is owned by a different user, please try again");
+                                    System.out.println("-------------------------------------------------------------------------------------------");
+                                }
+                                
                             } catch (NumberFormatException e) {
                                 System.out.println("-------------------------------------------------------------------------------------------");
                                 System.out.println("Invalid input, please try again");
                                 System.out.println("-------------------------------------------------------------------------------------------");
                             }
-                        } else if(input.equals("4")){
+                        } else if(input.equals("4") && userController.checkAuthorization(loggedInUserId)){
                             //Delete a moon menu----------------------------------------------------------------------------------------
                             System.out.println("Which Moon do you want to delete?");
                             System.out.println("Here are your Moons:");
@@ -200,7 +224,9 @@ public class MainDriver {
                                     if(moonController.moonBelongs(mId, loggedInUserId)) {
                                         moonController.deleteMoon(mId);
                                     } else {
+                                        System.out.println("-------------------------------------------------------------------------------------------");
                                         System.out.println("Moon Deletion Failed: This moon belongs to another user");
+                                        System.out.println("-------------------------------------------------------------------------------------------");
                                     }
                                 }
                             
@@ -209,12 +235,15 @@ public class MainDriver {
                                 System.out.println("Invalid input, please try again");
                                 System.out.println("-------------------------------------------------------------------------------------------");
                             }
-                        } else if(input.equals("5")){
+                        } else if(input.equals("5") && userController.checkAuthorization(loggedInUserId)){
                             //Viewing menu----------------------------------------------------------------------------------------
                             System.out.println("Here are your Planets and Moons:");
                             System.out.println("-------------------------------");
                             userController.viewAllPlanetsAndMoons(loggedInUserId);
 
+                        } else if(!userController.checkAuthorization(loggedInUserId)){
+                            System.out.println("Error: Unauthorized Access");
+                            break;
                         } else {
                             System.out.println("Error: Invalid input, please try again");
                             System.out.println("Press Enter key to continue...");

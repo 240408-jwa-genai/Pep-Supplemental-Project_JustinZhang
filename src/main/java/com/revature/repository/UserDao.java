@@ -40,6 +40,30 @@ public class UserDao {
         }
     }
 
+    public User getUserById(int id){
+        try (Connection connection = ConnectionUtil.createConnection()){
+            //Setting up an SQL statement to query the username
+            String sql = "SELECT * FROM users WHERE id = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, id);
+            //Executing the statement 
+            ResultSet rs = ps.executeQuery();
+            User possibleUser = new User();
+            //if there is an existing user, put data into the form of a User object
+            if(rs.next()){
+                possibleUser.setId(rs.getInt("id"));
+                possibleUser.setUsername(rs.getString("username"));
+                possibleUser.setPassword(rs.getString("password"));
+            }
+
+            return possibleUser;
+        } catch (SQLException e) {
+            //Handle exception and returns null
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public User createUser(UsernamePasswordAuthentication registerRequest) {
         try (Connection connection = ConnectionUtil.createConnection()){
             //Setting up an SQL statement to create a new user

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.revature.MainDriver;
+import com.revature.models.Moon;
 import com.revature.models.Planet;
 import com.revature.service.PlanetService;
 
@@ -45,25 +46,29 @@ public class PlanetController {
 		}
 	}
 
-	public void deletePlanet(int currentUserId, int id) {
-		Planet target = planetService.getPlanetById(currentUserId, id);
+	public boolean verifyPlanet(int currentUserId, int planetId){
+		Planet target = planetService.getPlanetById(currentUserId, planetId);
 		int planetOwner = target.getOwnerId();
 
-		if(currentUserId == planetOwner){
-			if(planetService.deletePlanetById(id)){
-				System.out.println("-------------------------------------------------------------------------------------------");
-				System.out.println(String.format("Planet Deletion Successful: Goodbye %s!", target.getName()));
-				System.out.println("-------------------------------------------------------------------------------------------");
-			} else {
-				System.out.println("-------------------------------------------------------------------------------------------");
-			}
+		if(currentUserId == planetOwner) return true;
+		
+		return false;
+	}
+	public void deletePlanet(int currentUserId, int id) {
+		Planet target = planetService.getPlanetById(currentUserId, id);
+		
+		if(planetService.deletePlanetById(id)){
+			System.out.println("-------------------------------------------------------------------------------------------");
+			System.out.println(String.format("Planet Deletion Successful: Goodbye %s!", target.getName()));
+			System.out.println("-------------------------------------------------------------------------------------------");
 		} else {
 			System.out.println("-------------------------------------------------------------------------------------------");
-			System.out.println("Planet Deletion Failed: You do not own a planet with this id");
-			System.out.println("-------------------------------------------------------------------------------------------");
 		}
-		
-		// TODO: implement
+	}
+	
+
+	public List<Moon> getMoons(int planetId){
+		return planetService.getMoons(planetId);
 	}
 
 	//Used to check if planet belongs to user

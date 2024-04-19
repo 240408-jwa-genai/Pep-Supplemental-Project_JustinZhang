@@ -2,6 +2,7 @@ package com.revature.service;
 
 import java.util.List;
 
+import com.revature.models.Moon;
 import com.revature.models.Planet;
 import com.revature.repository.PlanetDao;
 
@@ -56,5 +57,9 @@ public class PlanetService {
 	public boolean deletePlanetById(int planetId) {
 		// TODO Auto-generated method stub
 		return dao.deletePlanetById(planetId);
+	}
+
+	public List<Moon> getMoons(int planetId){
+		return dao.getMoons(planetId);
 	}
 }

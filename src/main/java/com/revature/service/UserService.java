@@ -72,6 +72,16 @@ public class UserService {
 		return new User();
 	}
 
+	public boolean getUserById(int loggedInUserId){
+		User checkUser = dao.getUserById(loggedInUserId);
+
+		if(checkUser.getId() == loggedInUserId){
+			return true;
+		}
+
+		return false;
+	}
+
 	public List<Planet> getPlanets(int currentUserId){
 		return dao.viewPlanets(currentUserId);
 	}

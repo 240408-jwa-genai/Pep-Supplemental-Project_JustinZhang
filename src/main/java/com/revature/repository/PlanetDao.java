@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.revature.models.Moon;
 import com.revature.models.Planet;
 import com.revature.utilities.ConnectionUtil;
 
@@ -130,10 +131,39 @@ public class PlanetDao {
         }
 	}
 
+    public List<Moon> getMoons(int planetId){
+        try (Connection connection = ConnectionUtil.createConnection()){
+            //Setting up an SQL statement to get all planets
+            String sql = "SELECT * FROM moons WHERE myPlanetId = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, planetId);
+            //Executing the statement 
+            ResultSet rs = ps.executeQuery();
+            List<Moon> moonList = new ArrayList<Moon>();
+            
+            //if there existing planets, put data into list of planets
+            while(rs.next()){
+                Moon newMoon = new Moon();
+                newMoon.setId(rs.getInt("id"));
+                newMoon.setName(rs.getString("name"));
+                newMoon.setMyPlanetId(rs.getInt("myPlanetId"));
+                moonList.add(newMoon);
+            }
+
+            return moonList;
+        } catch (SQLException e) {
+            //Handle exception and returns null
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 	public static void main(String[] args) {
 		PlanetDao pDao = new PlanetDao();
 
         List<Planet> planetList = pDao.getAllPlanets();
+
+        List<Moon> moonList = pDao.getMoons(1);
         /*int id = 0;
         int oId = 0;
         String name = "";
@@ -155,9 +185,9 @@ public class PlanetDao {
 		//Planet name = pDao.getPlanetByName("planetName");
 		//Planet id = pDao.getPlanetById(1);
 		//Planet testGet = pDao.getPlanetByName("Test");
-        for (Planet planet : planetList) {
+        for (Moon moon : moonList) {
             System.out.println("Space");
-            System.out.println(planet.toString());
+            System.out.println(moon.toString());
         }
 		
 	}

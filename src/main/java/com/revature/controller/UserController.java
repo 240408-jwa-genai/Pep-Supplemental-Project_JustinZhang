@@ -46,8 +46,7 @@ public class UserController {
 	}
 	
 	public boolean checkAuthorization(int userId) {	
-		// TODO: implement
-		return false;
+		return userService.getUserById(userId);
 	}
 
 	public void viewAllPlanetsAndMoons(int currentUserId){
@@ -55,10 +54,13 @@ public class UserController {
 		
         for (Planet planet : planets) {
             List<Moon> moons = userService.getMoons(planet.getId());
-            System.out.println(planet.toString());
-            for (Moon moon : moons) {
-                System.out.println(moon.toString());
-            }
+            System.out.println("Planet #" + planet.getId() + " - " + planet.getName());
+			if(!moons.isEmpty()){
+				System.out.println("Moons:");
+				for (Moon moon : moons) {
+					System.out.println(moon.getName());
+				}
+			}
             System.out.println("-------------------------------");
         }
 	}
