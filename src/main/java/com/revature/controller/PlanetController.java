@@ -29,11 +29,11 @@ public class PlanetController {
 	}
 
 	public void getPlanetByName(int currentUserId, String name) {
-		// TODO: implement
+		planetService.getPlanetByName(currentUserId, name);
 	}
 
 	public void getPlanetByID(int currentUserId, int id) {
-		// TODO: implement
+		planetService.getPlanetById(currentUserId, id);
 	}
 
 	public void createPlanet(int currentUserId, Planet planet) {
