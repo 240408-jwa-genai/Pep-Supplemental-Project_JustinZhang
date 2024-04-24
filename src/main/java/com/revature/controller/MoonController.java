@@ -29,8 +29,11 @@ public class MoonController {
 	public void createMoon(int currentUserId, Moon moon) {
 		Moon newMoon = moonService.createMoon(moon);
 		if(newMoon.getId() != 0){
+			System.out.println("");
+			System.out.println("-------------------------------------------------------------------------------------------");
 			System.out.println(String.format("Moon Creation Successful: Keep an eye out for Moon %s!", newMoon.getName()));
 			System.out.println("-------------------------------------------------------------------------------------------");
+			System.out.println("");
 		} else {
 			System.out.println("-------------------------------------------------------------------------------------------");
 		}
@@ -50,6 +53,7 @@ public class MoonController {
 			System.out.println("-------------------------------------------------------------------------------------------");
 			System.out.println(String.format("Moon Deletion Successful: Goodbye %s!", target.getName()));
 			System.out.println("-------------------------------------------------------------------------------------------");
+			System.out.println("");
 		}
 
 	}

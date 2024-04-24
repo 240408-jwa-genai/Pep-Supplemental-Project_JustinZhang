@@ -39,8 +39,10 @@ public class PlanetController {
 	public void createPlanet(int currentUserId, Planet planet) {
 		Planet newPlanet = planetService.createPlanet(currentUserId, planet);
 		if(newPlanet.getId() != 0){
+			System.out.println("-------------------------------------------------------------------------------------------");
 			System.out.println(String.format("Planet Creation Successful: Keep an eye out for Planet %s!", newPlanet.getName()));
 			System.out.println("-------------------------------------------------------------------------------------------");
+			System.out.println("");
 		} else {
 			System.out.println("-------------------------------------------------------------------------------------------");
 		}
@@ -61,6 +63,7 @@ public class PlanetController {
 			System.out.println("-------------------------------------------------------------------------------------------");
 			System.out.println(String.format("Planet Deletion Successful: Goodbye %s!", target.getName()));
 			System.out.println("-------------------------------------------------------------------------------------------");
+			System.out.println("");
 		} else {
 			System.out.println("-------------------------------------------------------------------------------------------");
 		}
@@ -100,6 +103,7 @@ public class PlanetController {
 			System.out.println("-------------------------------------------------------------------------------------------");
 			System.out.println("You have no planets yet, please input 0 to return to the menu");
 			System.out.println("-------------------------------------------------------------------------------------------");
+			System.out.println("");
 		} else {
 			for (Planet planet : userPlanets) {
 				System.out.println(planet.getId() + ". " + planet.getName());	

@@ -23,8 +23,11 @@ public class UserController {
 		User possibleUser = userService.authenticate(loginRequestData);
 		if (possibleUser.getId() != 0){
 			MainDriver.loggedInUserId = possibleUser.getId();
+			System.out.println("");
+			System.out.println("-------------------------------------------------------------------------------------------");
 			System.out.println(String.format("Hello %s! Welcome to the Planetarium", possibleUser.getUsername()));
 			System.out.println("-------------------------------------------------------------------------------------------");
+			System.out.println("");
 		} else {
 			System.out.println("-------------------------------------------------------------------------------------------");
 		}
@@ -33,7 +36,11 @@ public class UserController {
 	public void register(User registerRequestData) {
 		User userResponse = userService.register(registerRequestData);
 		if (userResponse.getId() != 0){
+			System.out.println("");
+			System.out.println("-------------------------------------------------------------------------------------------");
 			System.out.println("Registration successful! Enjoy using the Planetarium!");
+			System.out.println("-------------------------------------------------------------------------------------------");
+			System.out.println("");
 		} else {
 			System.out.println("-------------------------------------------------------------------------------------------");
 		}

@@ -48,7 +48,7 @@ public class MainDriver {
             boolean userIsActive = true;
             while(userIsActive){
                 System.out.println("Welcome to the Planetarium!");
-                System.out.println("To perform an action, type the corresponding number or type 'quit' to exit: ");
+                System.out.println("To perform an action, type the corresponding number: ");
                 System.out.println("1 - Register");
                 System.out.println("2 - Log In");
                 System.out.println("3 - Quit");
@@ -94,6 +94,7 @@ public class MainDriver {
 
                     while(loggedInUserId > 0){
                         //---------------------------------Logged in user menu-------------------------------------------------------
+                        System.out.println("-------------------------------------------------------------------------------------------");
                         System.out.println("Planetarium Menu");
                         System.out.println("To perform an action, type the corresponding number:");
                         System.out.println("1 - Create a Planet");
@@ -156,6 +157,7 @@ public class MainDriver {
                                         System.out.println("-------------------------------------------------------------------------------------------");
                                         System.out.println("This Planet is owned by a different user, please try again");
                                         System.out.println("-------------------------------------------------------------------------------------------");
+                                        System.out.println("");
                                     }
                                     
                                 }
@@ -163,6 +165,7 @@ public class MainDriver {
                                 System.out.println("-------------------------------------------------------------------------------------------");
                                 System.out.println("Invalid input, please try again");
                                 System.out.println("-------------------------------------------------------------------------------------------");
+                                System.out.println("");
                             }
 
                         } else if(input.equals("3") && userController.checkAuthorization(loggedInUserId)){
@@ -182,10 +185,13 @@ public class MainDriver {
                                         planetController.deletePlanet(loggedInUserId, pId);
                                     } else {
                                         System.out.println("This Planet has moons orbiting it, deleting the Planet will also delete its moons");
-                                        System.out.print("Are you sure? (Y/N): ");
+                                        System.out.println("Are you sure?: ");
+                                        System.out.println("1. Yes");
+                                        System.out.println("2. No");
+                                        System.out.print("Input confirmation: ");
                                         String confirm = scanner.nextLine();
                                         confirm = confirm.toLowerCase();
-                                        if(confirm.equals("y") || confirm.equals("yes")){
+                                        if(confirm.equals("y") || confirm.equals("yes") || confirm.equals("1")){
                                             for (Moon moon : moons) {
                                                 moonController.deleteMoon(moon.getId());
                                             }
@@ -196,12 +202,14 @@ public class MainDriver {
                                     System.out.println("-------------------------------------------------------------------------------------------");
                                     System.out.println("This Planet is owned by a different user, please try again");
                                     System.out.println("-------------------------------------------------------------------------------------------");
+                                    System.out.println("");
                                 }
                                 
                             } catch (NumberFormatException e) {
                                 System.out.println("-------------------------------------------------------------------------------------------");
                                 System.out.println("Invalid input, please try again");
                                 System.out.println("-------------------------------------------------------------------------------------------");
+                                System.out.println("");
                             }
                         } else if(input.equals("4") && userController.checkAuthorization(loggedInUserId)){
                             //Delete a moon menu----------------------------------------------------------------------------------------
@@ -227,6 +235,7 @@ public class MainDriver {
                                         System.out.println("-------------------------------------------------------------------------------------------");
                                         System.out.println("Moon Deletion Failed: This moon belongs to another user");
                                         System.out.println("-------------------------------------------------------------------------------------------");
+                                        System.out.println("");
                                     }
                                 }
                             
@@ -234,6 +243,7 @@ public class MainDriver {
                                 System.out.println("-------------------------------------------------------------------------------------------");
                                 System.out.println("Invalid input, please try again");
                                 System.out.println("-------------------------------------------------------------------------------------------");
+                                System.out.println("");
                             }
                         } else if(input.equals("5") && userController.checkAuthorization(loggedInUserId)){
                             //Viewing menu----------------------------------------------------------------------------------------
